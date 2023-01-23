@@ -15,6 +15,7 @@ pub fn main() !void {
     try BST.insert(tree, 10);
     try BST.insert(tree, 15);
     try BST.insert(tree, 5);
+    BST.delete(tree, 15);
     std.debug.print("{?}\n", .{BST.search(tree, 15)});
     std.debug.print("{?}\n", .{BST.search(tree, 14)});
     std.debug.print("{?}\n", .{BST.search(tree, 20)});

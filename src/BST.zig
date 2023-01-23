@@ -47,6 +47,46 @@ pub fn insert(bst: *BST, value: i32) !void {
     }
 }
 
+fn inorder_successor(optional_root: ?*Node) ?*Node {
+    var optional_node = optional_root;
+    while (optional_node != null and optional_node.?.left != null) {
+        optional_node = optional_node.?.left;
+    }
+    return optional_node;
+}
+
+pub fn delete(bst: *const BST, value: i32) void {
+    if (bst.root != null and bst.root.?.value == value) {
+        @panic("ATTEMPTED TO DELETE ROOT NODE");
+    }
+    _ = delete_helper(bst.allocator, bst.root, value);
+}
+
+fn delete_helper(allocator: *const Allocator, optional_root: ?*Node, value: i32) ?*Node {
+    if (optional_root) |root| {
+        if (value < root.value) {
+            root.left = delete_helper(allocator, root.left, value);
+        } else if (value > root.value) {
+            root.right = delete_helper(allocator, root.right, value);
+        } else {
+            if (root.left == null) {
+                var temp = root.right;
+                allocator.destroy(root);
+                return temp;
+            } else if (root.right == null) {
+                var temp = root.left;
+                allocator.destroy(root);
+                return temp;
+            } else {
+                var temp = inorder_successor(root.right);
+                root.value = temp.?.value;
+                root.right = delete_helper(allocator, root.right, temp.?.value);
+            }
+        }
+    }
+    return optional_root;
+}
+
 pub fn search(bst: *const BST, value: i32) bool {
     var optional_node = bst.root;
     while (optional_node) |current_node| {
