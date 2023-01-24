@@ -55,11 +55,8 @@ fn inorder_successor(optional_root: ?*Node) ?*Node {
     return optional_node;
 }
 
-pub fn delete(bst: *const BST, value: i32) void {
-    if (bst.root != null and bst.root.?.value == value) {
-        @panic("ATTEMPTED TO DELETE ROOT NODE");
-    }
-    _ = delete_helper(bst.allocator, bst.root, value);
+pub fn delete(bst: *BST, value: i32) void {
+    bst.root = delete_helper(bst.allocator, bst.root, value);
 }
 
 fn delete_helper(allocator: *const Allocator, optional_root: ?*Node, value: i32) ?*Node {
