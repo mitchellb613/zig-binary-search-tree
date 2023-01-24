@@ -4,13 +4,13 @@ const Allocator = std.mem.Allocator;
 
 const Node = struct {
     value: i32,
-    left: ?*Node,
-    right: ?*Node,
+    left: ?*Node = null,
+    right: ?*Node = null,
 };
 
-fn Node_new(allocator: *const Allocator, value: i32) !*Node {
+fn node_new(allocator: *const Allocator, value: i32) !*Node {
     const node = try allocator.create(Node);
-    node.* = .{ .value = value, .left = null, .right = null };
+    node.* = .{ .value = value };
     return node;
 }
 
@@ -38,12 +38,12 @@ pub fn insert(bst: *BST, value: i32) !void {
     }
     if (optional_trail) |trail| {
         if (value <= trail.value) {
-            trail.left = try Node_new(bst.allocator, value);
+            trail.left = try node_new(bst.allocator, value);
         } else {
-            trail.right = try Node_new(bst.allocator, value);
+            trail.right = try node_new(bst.allocator, value);
         }
     } else {
-        bst.root = try Node_new(bst.allocator, value);
+        bst.root = try node_new(bst.allocator, value);
     }
 }
 
